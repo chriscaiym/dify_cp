@@ -39,7 +39,7 @@ class OAICompatEmbeddingModel(_CommonOAI_API_Compat, TextEmbeddingModel):
         :param user: unique user id
         :return: embeddings result
         """
-       
+
         # Prepare headers and payload for the request
         headers = {
             'Content-Type': 'application/json'
@@ -49,11 +49,17 @@ class OAICompatEmbeddingModel(_CommonOAI_API_Compat, TextEmbeddingModel):
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
 
+            if 'shopee' in credentials['endpoint_url']:
+                headers["Authorization"] = f"Basic {api_key}"
+
         endpoint_url = credentials.get('endpoint_url')
         if not endpoint_url.endswith('/'):
             endpoint_url += '/'
 
-        endpoint_url = urljoin(endpoint_url, 'embeddings')
+        if 'shopee' in credentials['endpoint_url']:
+            endpoint_url = urljoin(endpoint_url, 'embedding')
+        else:
+            endpoint_url = urljoin(endpoint_url, 'embeddings')
 
         extra_model_kwargs = {}
         if user:
@@ -118,7 +124,7 @@ class OAICompatEmbeddingModel(_CommonOAI_API_Compat, TextEmbeddingModel):
             credentials=credentials,
             tokens=used_tokens
         )
-        
+
         return TextEmbeddingResult(
             embeddings=batched_embeddings,
             usage=usage,
@@ -154,11 +160,17 @@ class OAICompatEmbeddingModel(_CommonOAI_API_Compat, TextEmbeddingModel):
             if api_key:
                 headers["Authorization"] = f"Bearer {api_key}"
 
+                if 'shopee' in credentials['endpoint_url']:
+                    headers["Authorization"] = f"Basic {api_key}"
+
             endpoint_url = credentials.get('endpoint_url')
             if not endpoint_url.endswith('/'):
                 endpoint_url += '/'
 
-            endpoint_url = urljoin(endpoint_url, 'embeddings')
+            if 'shopee' in credentials['endpoint_url']:
+                endpoint_url = urljoin(endpoint_url, 'embedding')
+            else:
+                endpoint_url = urljoin(endpoint_url, 'embeddings')
 
             payload = {
                 'input': 'ping',
@@ -174,7 +186,7 @@ class OAICompatEmbeddingModel(_CommonOAI_API_Compat, TextEmbeddingModel):
 
             if response.status_code != 200:
                 raise CredentialsValidateFailedError(
-                    f'Credentials validation failed with status code {response.status_code}')
+                    f'Credentials validation failed with status code {response.status_code} {endpoint_url}, {headers}, {payload}')
 
             try:
                 json_result = response.json()

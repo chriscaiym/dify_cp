@@ -107,9 +107,16 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
             if api_key:
                 headers["Authorization"] = f"Bearer {api_key}"
 
+                if "gateway.mpi.test.shopee.io" in credentials["endpoint_url"]:
+                    headers["Authorization"] = f"Basic {api_key}"
+
             endpoint_url = credentials['endpoint_url']
             if not endpoint_url.endswith('/'):
                 endpoint_url += '/'
+
+            if "ais.mlp.shopee.io/api/notebooks" in credentials["endpoint_url"]:
+                headers["Cookie"] = f"{api_key}"
+                headers["Authorization"] = ""
 
             # prepare the payload for a simple ping to the model
             data = {
@@ -138,7 +145,7 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
                 endpoint_url,
                 headers=headers,
                 json=data,
-                timeout=(10, 300)
+                timeout=(60, 300)
             )
 
             if response.status_code != 200:
@@ -291,9 +298,16 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
 
+            if "gateway.mpi.test.shopee.io" in credentials["endpoint_url"]:
+                headers["Authorization"] = f"Basic {api_key}"
+
         endpoint_url = credentials["endpoint_url"]
         if not endpoint_url.endswith('/'):
             endpoint_url += '/'
+
+        if "ais.mlp.shopee.io/api/notebooks" in credentials["endpoint_url"]:
+            headers["Cookie"] = f"{api_key}"
+            headers["Authorization"] = ""
 
         data = {
             "model": model,
@@ -340,7 +354,7 @@ class OAIAPICompatLargeLanguageModel(_CommonOAI_API_Compat, LargeLanguageModel):
             endpoint_url,
             headers=headers,
             json=data,
-            timeout=(10, 300),
+            timeout=(60, 300),
             stream=stream
         )
 
