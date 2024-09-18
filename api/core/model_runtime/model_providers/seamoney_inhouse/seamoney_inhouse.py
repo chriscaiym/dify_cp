@@ -20,7 +20,7 @@ class SeaMoneyProvider(ModelProvider):
             model_instance = self.get_model_instance(ModelType.LLM)
 
             # TODO: placeholder to pass credential check
-            model_nm = "/home/work/.cache/huggingface/hub/models--OpenGVLab--InternVL2-40B-AWQ/snapshots/746114fc984c145a5730c2b93d7859edef888880"
+            model_nm = "EMPTY"
             credentials["mode"] = "chat"
 
             model_instance.validate_credentials(

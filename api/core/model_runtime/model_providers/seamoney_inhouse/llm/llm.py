@@ -120,33 +120,40 @@ class SeaMoneyLargeLanguageModel(_CommonSeaMoney, LargeLanguageModel):
                 headers["Authorization"] = ""
 
 
-            # prepare the payload for a simple ping to the model
-            data = {
-                'model': model,
-                'max_tokens': 5
-            }
+            # # prepare the payload for a simple ping to the model
+            # data = {
+            #     'model': model,
+            #     'max_tokens': 5
+            # }
 
-            completion_type = LLMMode.value_of(credentials['mode'])
+            # completion_type = LLMMode.value_of(credentials['mode'])
 
-            if completion_type is LLMMode.CHAT:
-                data['messages'] = [
-                    {
-                        "role": "user",
-                        "content": "ping"
-                    },
-                ]
-                endpoint_url = urljoin(endpoint_url, 'chat/completions')
-            elif completion_type is LLMMode.COMPLETION:
-                data['prompt'] = 'ping'
-                endpoint_url = urljoin(endpoint_url, 'completions')
-            else:
-                raise ValueError("Unsupported completion type for model configuration.")
+            # if completion_type is LLMMode.CHAT:
+            #     data['messages'] = [
+            #         {
+            #             "role": "user",
+            #             "content": "ping"
+            #         },
+            #     ]
+            #     endpoint_url = urljoin(endpoint_url, 'chat/completions')
+            # elif completion_type is LLMMode.COMPLETION:
+            #     data['prompt'] = 'ping'
+            #     endpoint_url = urljoin(endpoint_url, 'completions')
+            # else:
+            #     raise ValueError("Unsupported completion type for model configuration.")
 
             # send a post request to validate the credentials
-            response = requests.post(
-                endpoint_url,
+            # response = requests.post(
+            #     endpoint_url,
+            #     headers=headers,
+            #     json=data,
+            #     timeout=(10, 300)
+            # )
+
+            # TODO: currently, only check connection here
+            response = requests.get(
+                urljoin(endpoint_url, 'models'),
                 headers=headers,
-                json=data,
                 timeout=(10, 300)
             )
 
@@ -317,8 +324,6 @@ class SeaMoneyLargeLanguageModel(_CommonSeaMoney, LargeLanguageModel):
             "stream": stream,
             **model_parameters
         }
-
-        logger.info(f"data {data}")
 
         completion_type = LLMMode.value_of(credentials['mode'])
 
